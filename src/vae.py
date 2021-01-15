@@ -6,6 +6,7 @@ from tensorflow.python.keras.callbacks import CSVLogger
 from tensorflow.python.keras.layers import Conv2D, Dense, Flatten, \
     Conv2DTranspose, Reshape, BatchNormalization, Dropout
 from tensorflow.keras.optimizers import Adam
+from tensorflow.python.ops.gen_math_ops import squared_difference
 from tensorflow.python.ops.losses.losses_impl import absolute_difference, Reduction
 import tensorflow.keras.backend as K
 
@@ -107,18 +108,14 @@ class vae(keras.Model):
         if isinstance(data, tuple):
             data = data[0]
             mask = data[1]
-        data = data[0]
-        mask = data[1]
+
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
 
-            L1 = absolute_difference(dataSrm, reconstruction, reduction=Reduction.NONE)
-
-            error = tf.reduce_mean(L1, axis=3)
-            print(error.numpy().shape)
-            print(mask.numpy().shape)
+            L2 = squared_difference(dataSrm, reconstruction)
+            error = tf.reduce_mean(L2, axis=-1)
 
             reconstruction_loss = dicriminative_error(error, mask)
 
@@ -146,8 +143,8 @@ class vae(keras.Model):
         z_mean, z_log_var, z = self.encoder(dataSrm)
         reconstruction = self.decoder(z)
 
-        L1 = absolute_difference(dataSrm, reconstruction, reduction=Reduction.NONE)
-        error = tf.reduce_mean(L1, axis=3)
+        L2 = squared_difference(dataSrm, reconstruction)
+        error = tf.reduce_mean(L2, axis=-1)
 
         reconstruction_loss = dicriminative_error(error, mask)
 
@@ -168,8 +165,11 @@ def train(name_model, dataPath, maskPath):
     data = np.load(dataPath)
     mask = np.load(maskPath)
 
+    mask = np.array(mask/255., dtype='float32')
+    np.save("../data/CASIA.numpy/all_to_train_msk.npy", mask)
+
     print("... Spliting")
-    train_data, test_data, train_mask, test_mask = data, data, mask, mask #train_test_split(data, mask, random_state=42)
+    train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
     model = vae(encoder(), decoder())
     model.compile(optimizer=Adam(lr=1e-6), run_eagerly=True)
@@ -187,4 +187,4 @@ def train(name_model, dataPath, maskPath):
 
 
 if __name__ == '__main__':
-    train("vae_250", "../data/CASIA.numpy/mini_test.npy", "../data/CASIA.numpy/mini_test_msk.npy")
+    train("vae_250", "../data/CASIA.numpy/all_to_train.npy", "../data/CASIA.numpy/all_to_train_msk.npy")
