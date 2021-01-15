@@ -63,29 +63,6 @@ def extractPatchesMask(msk, window_shape, stride):
     return patches
 
 
-def applySRM(img, srmkernel):
-    lst_srm = []
-    for k in range(30):
-        filter_srm = srmkernel[:,:,0,k]
-        filtered = cv2.filter2D(img,-1,filter_srm)
-        lst_srm.append(filtered)
-    return np.concatenate(lst_srm, axis=-1)
-
-
-def filter_data():
-    srm = np.loadtxt('rich_model.txt')
-    srmkernel = np.float32(srm)
-    srmkernel = np.reshape(srmkernel, [30, 1, 5, 5])
-    srmkernel = np.transpose(srmkernel, (2, 3, 1, 0))
-
-    img = np.load('../data/CASIA.numpy/spliced.npy')
-    n, _, _, _ = img.shape
-    img_srm = []
-    for k in tqdm(range(n)):
-        img_srm.append(applySRM(img[k], srmkernel))
-    np.save('../data/CASIA.numpy/spliced_filtered.npy', img_srm)
-
-
 def save_data():
     path_img, path_msk = "../data/CASIA2/Tp/", "../data/CASIA2/gt/"
 
