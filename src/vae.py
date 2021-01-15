@@ -185,4 +185,4 @@ def train(name_model, dataPath, maskPath):
 
 
 if __name__ == '__main__':
-    train("vae_250", "../data/CASIA.numpy/spliced.npy", "../data/CASIA.numpy/spliced_msk.npy")
+    train("vae_250", "../data/CASIA.numpy/all.npy", "../data/CASIA.numpy/all_msk.npy")
