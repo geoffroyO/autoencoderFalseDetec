@@ -90,16 +90,18 @@ def save_data():
     path_img, path_msk = "../data/CASIA2/Tp/", "../data/CASIA2/gt/"
 
     spliced, copy_moved, spliced_msk, copy_moved_msk = load_images(path_img, path_msk)
-    data, labels = patch_images(spliced, spliced_msk)
 
-    np.save("../data/CASIA.numpy/spliced.npy", data)
-    np.save("../data/CASIA.numpy/spliced_msk.npy", labels)
+    data_spliced, labels_spliced = patch_images(spliced, spliced_msk)
+    data_cp, labels_cp = patch_images(copy_moved, copy_moved_msk)
 
-    np.save("../data/CASIA.numpy/copymoved.npy", copy_moved)
-    np.save("../data/CASIA.numpy/copymoved_msk.npy", copy_moved_msk)
+    np.save("../data/CASIA.numpy/spliced.npy", data_spliced)
+    np.save("../data/CASIA.numpy/spliced_msk.npy", labels_spliced)
 
-    np.save("../data/CASIA.numpy/all.npy", np.concatenate((spliced, copy_moved)))
-    np.save("../data/CASIA.numpy/all_msk.npy", np.concatenate((spliced_msk, copy_moved_msk)))
+    np.save("../data/CASIA.numpy/copymoved.npy", data_cp)
+    np.save("../data/CASIA.numpy/copymoved_msk.npy", labels_cp)
+
+    np.save("../data/CASIA.numpy/all.npy", np.concatenate((data_spliced, data_cp)))
+    np.save("../data/CASIA.numpy/all_msk.npy", np.concatenate((labels_spliced, labels_cp)))
 
 
 def extract_no_border():
