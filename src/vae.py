@@ -116,8 +116,8 @@ class vae(keras.Model):
             L1 = absolute_difference(dataSrm, reconstruction, reduction=Reduction.NONE)
 
             error = tf.reduce_mean(L1, axis=3)
-            print(tf.shape(error))
-            print(tf.shape(mask))
+            print(error.numpy().shape)
+            print(mask.numpy().shape)
 
             reconstruction_loss = dicriminative_error(error, mask)
 
