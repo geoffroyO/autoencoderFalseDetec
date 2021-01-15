@@ -107,7 +107,8 @@ class vae(keras.Model):
         if isinstance(data, tuple):
             data = data[0]
             mask = data[1]
-
+        data = data[0]
+        mask = data[1]
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
             z_mean, z_log_var, z = self.encoder(dataSrm)
