@@ -38,16 +38,16 @@ class Sampling(tf.keras.layers.Layer):
 
 
 def encoder():
-    latent_dim = 512
-    encoder_inputs = Input(shape=(32, 32, 90))
+    latent_dim = 128
+    encoder_inputs = Input(shape=(32, 32, 30))
 
-    x = Conv2D(128, 5, activation='relu', strides=2, padding="same")(encoder_inputs)
+    x = Conv2D(32, 5, activation='relu', strides=2, padding="same")(encoder_inputs)
     x = BatchNormalization()(x)
 
-    x = Conv2D(256, 5, activation="relu", strides=2, padding="same")(x)
+    x = Conv2D(64, 5, activation="relu", strides=2, padding="same")(x)
     x = BatchNormalization()(x)
 
-    x = Conv2D(512, 5, activation="relu", strides=2, padding="same")(x)
+    x = Conv2D(128, 5, activation="relu", strides=2, padding="same")(x)
     x = BatchNormalization()(x)
 
     x = Flatten()(x)
@@ -62,20 +62,20 @@ def encoder():
 
 
 def decoder():
-    latent_inputs = keras.Input(shape=(512,))
-    x = Dropout(0.25)(Dense(8 * 8 * 512, activation='relu')(latent_inputs))
-    x = Reshape((8, 8, 512))(x)
+    latent_inputs = keras.Input(shape=(128,))
+    x = Dropout(0.25)(Dense(8 * 8 * 128, activation='relu')(latent_inputs))
+    x = Reshape((8, 8, 128))(x)
 
-    x = Conv2DTranspose(512, 1, activation='relu', padding='same')(x)
+    x = Conv2DTranspose(128, 1, activation='relu', padding='same')(x)
     x = BatchNormalization()(x)
 
-    x = Conv2DTranspose(256, 3, strides=2, activation='relu', padding="same")(x)
+    x = Conv2DTranspose(64, 3, strides=2, activation='relu', padding="same")(x)
     x = BatchNormalization()(x)
 
-    x = Conv2DTranspose(128, 3, strides=2, activation='relu', padding="same")(x)
+    x = Conv2DTranspose(32, 3, strides=2, activation='relu', padding="same")(x)
     x = BatchNormalization()(x)
 
-    decoder_outputs = Conv2DTranspose(90, 3, activation='sigmoid', padding="same")(x)
+    decoder_outputs = Conv2DTranspose(30, 3, activation='sigmoid', padding="same")(x)
 
     decoder = Model(latent_inputs, decoder_outputs, name="decoder")
     return decoder
@@ -98,9 +98,10 @@ class vae(keras.Model):
         self.decoder = decoder
 
     def call(self, inputs, **kwargs):
-        _, _, z = self.encoder(inputs)
+        inputsSrm = self.srmConv(inputs)
+        _, _, z = self.encoder(inputsSrm)
         reconstruction = self.decoder(z)
-        return inputs, reconstruction
+        return inputsSrm, reconstruction
 
     def train_step(self, data):
         if isinstance(data, tuple):
@@ -108,10 +109,11 @@ class vae(keras.Model):
             mask = data[1]
 
         with tf.GradientTape() as tape:
-            z_mean, z_log_var, z = self.encoder(data)
+            dataSrm = self.srmConv(data)
+            z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
 
-            L1 = absolute_difference(data, reconstruction, reduction=Reduction.NONE)
+            L1 = absolute_difference(dataSrm, reconstruction, reduction=Reduction.NONE)
 
             error = tf.reduce_mean(L1, axis=3)
 
@@ -137,10 +139,11 @@ class vae(keras.Model):
             data = data[0]
             mask = data[1]
 
-        z_mean, z_log_var, z = self.encoder(data)
+        dataSrm = self.srmConv(data)
+        z_mean, z_log_var, z = self.encoder(dataSrm)
         reconstruction = self.decoder(z)
 
-        L1 = absolute_difference(data, reconstruction, reduction=Reduction.NONE)
+        L1 = absolute_difference(dataSrm, reconstruction, reduction=Reduction.NONE)
         error = tf.reduce_mean(L1, axis=3)
 
         reconstruction_loss = dicriminative_error(error, mask)
