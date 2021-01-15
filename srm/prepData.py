@@ -81,7 +81,7 @@ def filter_data():
     img = np.load('../data/CASIA.numpy/spliced.npy')
     n, _, _, _ = img.shape
     img_srm = []
-    for k in range(n):
+    for k in tqdm(range(n)):
         img_srm.append(applySRM(img[k], srmkernel))
     np.save('../data/CASIA.numpy/spliced_filtered.npy', img_srm)
 
