@@ -112,10 +112,8 @@ class vae(keras.Model):
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(data, reconstruction, reduction=Reduction.NONE)
-            print(L1.shape)
+
             error = tf.reduce_mean(L1, axis=3)
-            if error:
-                print("ok")
 
             reconstruction_loss = dicriminative_error(error, mask)
 
@@ -160,9 +158,11 @@ class vae(keras.Model):
 
 
 def train(name_model, dataPath, maskPath):
+    print("... Loading data")
     data = np.load(dataPath)
     mask = np.load(maskPath)
 
+    print("... Spliting")
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
     model = vae(encoder(), decoder())
