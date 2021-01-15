@@ -78,12 +78,12 @@ def filter_data():
     srmkernel = np.reshape(srmkernel, [30, 1, 5, 5])
     srmkernel = np.transpose(srmkernel, (2, 3, 1, 0))
 
-    img = np.load('PATH')
+    img = np.load('../data/CASIA.numpy/spliced.npy')
     n, _, _, _ = img.shape
     img_srm = []
     for k in range(n):
         img_srm.append(applySRM(img[k], srmkernel))
-    np.save('PATH', img_srm)
+    np.save('../data/CASIA.numpy/spliced_filtered.npy', img_srm)
 
 
 def save_data():
@@ -111,7 +111,7 @@ def extract_no_border(type):
     n, _, _ = labels.shape
     inside = []
 
-    for k in tqdm(range(n)):
+    for k in range(n):
         s = np.sum(labels[k])
         if s == 0 or s == 32*32:
             inside.append(data[k])
@@ -120,4 +120,4 @@ def extract_no_border(type):
 
 
 if __name__ == '__main__':
-    extract_no_border("spliced")
+    filter_data()
