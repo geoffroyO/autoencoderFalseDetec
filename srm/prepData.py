@@ -36,8 +36,8 @@ def load_images(path_img, path_msk):
 def patch_images(images, masks):
     data, labels = [], []
     for n, image in enumerate(tqdm(images)):
-        patchs_img = extractPatches(image, (32, 32, 3), 8)
-        patchs_msk = extractPatchesMask(masks[n], (32, 32), 8)
+        patchs_img = extractPatches(image, (32, 32, 3), 16)
+        patchs_msk = extractPatchesMask(masks[n], (32, 32), 16)
         for k, patch_img in enumerate(patchs_img):
             patch_msk = patchs_msk[k]
             data.append(patch_img)
@@ -120,4 +120,4 @@ def extract_no_border(type):
 
 
 if __name__ == '__main__':
-    filter_data()
+    save_data()
