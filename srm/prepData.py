@@ -111,7 +111,7 @@ def extract_no_border(type):
     n, _, _ = labels.shape
     inside = []
 
-    for k in range(n):
+    for k in tqdm(range(n)):
         s = np.sum(labels[k])
         if s == 0 or s == 32*32:
             inside.append(data[k])
