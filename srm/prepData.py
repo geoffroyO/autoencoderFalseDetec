@@ -104,9 +104,9 @@ def save_data():
     np.save("../data/CASIA.numpy/all_msk.npy", np.concatenate((labels_spliced, labels_cp)))
 
 
-def extract_no_border():
-    data = np.load("../data/CASIA.numpy/all.npy")
-    labels = np.load("../data/CASIA.numpy/all_msk.npy")
+def extract_no_border(type):
+    data = np.load("../data/CASIA.numpy/{}.npy".format(type))
+    labels = np.load("../data/CASIA.numpy/{}_msk.npy".format(type))
 
     n, _, _ = labels.shape
     inside = []
@@ -116,8 +116,8 @@ def extract_no_border():
         if s == 0 or s == 32*32:
             inside.append(data[k])
 
-    np.svae("../data/CASIA.numpy/inside.npy", inside)
+    np.svae("../data/CASIA.numpy/{}_inside.npy".format(type).format(type), inside)
 
 
 if __name__ == '__main__':
-    save_data()
+    extract_no_border("spliced")
