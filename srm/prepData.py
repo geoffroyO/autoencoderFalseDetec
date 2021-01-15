@@ -118,4 +118,4 @@ def extract_no_border():
 
 
 if __name__ == '__main__':
-    print("yo")
+    save_data()
