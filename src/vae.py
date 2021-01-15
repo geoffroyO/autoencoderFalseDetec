@@ -181,7 +181,7 @@ def train(name_model, dataPath, maskPath):
 
     callbacks_list = [checkpoint, csv_logger]
 
-    model.fit((train_data, train_mask), epochs=250, batch_size=128,
+    model.fit(train_data, train_mask, epochs=250, batch_size=128,
               validation_data=(test_data, test_mask),
               callbacks=callbacks_list)
 
