@@ -116,6 +116,8 @@ class vae(keras.Model):
             L1 = absolute_difference(dataSrm, reconstruction, reduction=Reduction.NONE)
 
             error = tf.reduce_mean(L1, axis=3)
+            print(tf.shape(error))
+            print(tf.shape(mask))
 
             reconstruction_loss = dicriminative_error(error, mask)
 
@@ -165,12 +167,6 @@ def train(name_model, dataPath, maskPath):
     data = np.load(dataPath)
     mask = np.load(maskPath)
 
-    data = np.array(data[:int(0.75*len(data))] / 255., dtype='float32')
-    mask = mask[:int(0.75*len(mask))]
-
-    np.save("../data/CASIA.numpy/all_to_train.npy", data)
-    np.save("../data/CASIA.numpy/all_to_train_msk.npy", mask)
-
     print("... Spliting")
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
@@ -190,4 +186,4 @@ def train(name_model, dataPath, maskPath):
 
 
 if __name__ == '__main__':
-    train("vae_250", "../data/CASIA.numpy/all.npy", "../data/CASIA.numpy/all_msk.npy")
+    train("vae_250", "../data/CASIA.numpy/all_to_train.npy", "../data/CASIA.numpy/all_to_train_msk.npy")
