@@ -175,7 +175,7 @@ def train(name_model, dataPath, maskPath):
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
     model = vae(encoder(), decoder())
-    model.compile(optimizer=Adam(lr=1e-6), run_eagerly=True)
+    model.compile(optimizer=Adam(lr=1e-6))
 
     checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/{}".format(name_model),
                                                     monitor='val_loss', verbose=1,
