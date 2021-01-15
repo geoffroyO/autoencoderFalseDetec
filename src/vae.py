@@ -163,6 +163,7 @@ class vae(keras.Model):
 def train(name_model, dataPath, maskPath):
     print("... Loading data")
     data = np.load(dataPath)
+    data = np.array(data/255., dtype='float32')
     mask = np.load(maskPath)
 
     print("... Spliting")
