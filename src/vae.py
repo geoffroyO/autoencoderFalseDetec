@@ -168,10 +168,10 @@ def train(name_model, dataPath, maskPath):
     mask = np.load(maskPath)
 
     print("... Spliting")
-    train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
+    train_data, test_data, train_mask, test_mask = data, data, mask, mask #train_test_split(data, mask, random_state=42)
 
     model = vae(encoder(), decoder())
-    model.compile(optimizer=Adam(lr=1e-6))
+    model.compile(optimizer=Adam(lr=1e-6), run_eagerly=True)
 
     checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/{}".format(name_model),
                                                     monitor='val_loss', verbose=1,
@@ -186,4 +186,4 @@ def train(name_model, dataPath, maskPath):
 
 
 if __name__ == '__main__':
-    train("vae_250", "../data/CASIA.numpy/all_to_train.npy", "../data/CASIA.numpy/all_to_train_msk.npy")
+    train("vae_250", "../data/CASIA.numpy/mini_test.npy", "../data/CASIA.numpy/mini_test_msk.npy")
