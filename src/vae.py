@@ -7,8 +7,26 @@ from tensorflow.python.keras.layers import Conv2D, Dense, Flatten, \
     Conv2DTranspose, Reshape, BatchNormalization, Dropout
 from tensorflow.python.keras.optimizers import Adam
 from tensorflow.python.ops.losses.losses_impl import absolute_difference, Reduction
+import tensorflow.keras.backend as K
 
 import numpy as np
+
+
+def kernel_init(shape, dtype=None):
+    srm = np.loadtxt('../srm/rich_model.txt')
+    srmkernel = np.float32(srm)
+    srmkernel = np.reshape(srmkernel, [30, 1, 5, 5])
+    srmkernel = np.transpose(srmkernel, (2, 3, 1, 0))
+
+    kernels = np.zeros([5, 5, 3, 30])
+    for k in range(30):
+        kernels[:, :, 0, k] = srmkernel[:, :, 0, k]
+        kernels[:, :, 1, k] = srmkernel[:, :, 0, k]
+        kernels[:, :, 2, k] = srmkernel[:, :, 0, k]
+
+    assert kernels.shape == shape
+
+    return K.variable(kernels, dtype='float32')
 
 class Sampling(tf.keras.layers.Layer):
     def call(self, inputs, **kwargs):
@@ -74,6 +92,8 @@ def dicriminative_error(error, mask):
 class vae(keras.Model):
     def __init__(self, encoder, decoder, **kwargs):
         super(vae, self).__init__(**kwargs)
+        self.srmConv = Conv2D(30, kernel_size=[5, 5], kernel_initializer=kernel_init,
+                              strides=1, padding='same', trainable=False)
         self.encoder = encoder
         self.decoder = decoder
 
@@ -92,7 +112,10 @@ class vae(keras.Model):
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(data, reconstruction, reduction=Reduction.NONE)
+            print(L1.shape)
             error = tf.reduce_mean(L1, axis=3)
+            if error:
+                print("ok")
 
             reconstruction_loss = dicriminative_error(error, mask)
 
