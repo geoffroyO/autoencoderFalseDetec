@@ -84,6 +84,12 @@ def decoder():
 
 def dicriminative_error(error, mask):
     mask1 = 1 - mask
+    print(mask1.numpy.shape)
+    print(mask1)
+
+    print(error.numpy.shape)
+    print(error)
+
     error1 = tf.math.multiply(error, mask1)
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
     mean = tf.math.divide(tf.reduce_sum(error1, axis=[1, 2]), N1)
@@ -164,9 +170,6 @@ def train(name_model, dataPath, maskPath):
     print("... Loading data")
     data = np.load(dataPath)
     mask = np.load(maskPath)
-
-    mask = np.array(mask/255., dtype='float32')
-    np.save("../data/CASIA.numpy/all_to_train_msk.npy", mask)
 
     print("... Spliting")
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
