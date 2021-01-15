@@ -168,6 +168,9 @@ def train(name_model, dataPath, maskPath):
     data = np.array(data[:int(0.75*len(data))] / 255., dtype='float32')
     mask = mask[:int(0.75*len(mask))]
 
+    np.save("../data/CASIA.numpy/all_to_train.npy", data)
+    np.save("../data/CASIA.numpy/all_to_train_msk.npy", mask)
+
     print("... Spliting")
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
