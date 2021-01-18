@@ -83,6 +83,8 @@ def decoder():
 
 
 def dicriminative_error(error, mask):
+    print(error)
+    print(mask)
     mask1 = 1 - mask
     error1 = tf.math.multiply(error, mask1)
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
