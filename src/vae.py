@@ -111,8 +111,10 @@ class vae(keras.Model):
 
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
+            dataSrm = BatchNormalization()(dataSrm)
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
+            reconstruction = BatchNormalization()(reconstruction)
 
             L2 = squared_difference(dataSrm, reconstruction)
             error = tf.reduce_mean(L2, axis=-1)
@@ -140,8 +142,10 @@ class vae(keras.Model):
             data = data[0]
 
         dataSrm = self.srmConv(data)
+        dataSrm = BatchNormalization()(dataSrm)
         z_mean, z_log_var, z = self.encoder(dataSrm)
         reconstruction = self.decoder(z)
+        reconstruction = BatchNormalization()(reconstruction)
 
         L2 = squared_difference(dataSrm, reconstruction)
         error = tf.reduce_mean(L2, axis=-1)
