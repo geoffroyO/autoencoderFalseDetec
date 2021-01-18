@@ -192,13 +192,4 @@ if __name__ == '__main__':
     dataPath = "../data/CASIA.numpy/all_to_train.npy"
     maskPath = "../data/CASIA.numpy/all_to_train_msk.npy"
 
-    #train("vae_250", dataPath, maskPath")
-
-    data = np.load(dataPath)
-    mask = np.load(maskPath)
-
-    data = data[:int(0.75*len(data))]
-    mask = mask[:int(0.75*len(mask))]
-
-    np.save(dataPath, data)
-    np.save(maskPath, mask)
+    train("vae_250", dataPath, maskPath")
