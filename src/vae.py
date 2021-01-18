@@ -105,7 +105,9 @@ class vae(keras.Model):
         _, _, z = self.encoder(inputsSrm)
         reconstruction = self.decoder(z)
         reconstruction = self.norm(reconstruction)
-        return inputsSrm, reconstruction
+        error = squared_difference(inputsSrm, reconstruction)
+        error = tf.reduce_mean(error, axis=-1)
+        return error
 
     def train_step(self, data):
         if isinstance(data, tuple):
@@ -175,7 +177,6 @@ def train(name_model, dataPath, maskPath):
     print("... Spliting")
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
-    print("*****{}*****".format(train_mask.shape))
     model = vae(encoder(), decoder())
     model.compile(optimizer=Adam(lr=1e-6))
 
@@ -195,4 +196,4 @@ if __name__ == '__main__':
     dataPath = "../data/CASIA.numpy/all_to_train.npy"
     maskPath = "../data/CASIA.numpy/all_to_train_msk.npy"
 
-    train("vae_250", dataPath, maskPath)
+    train("vae_250.h5", dataPath, maskPath)
