@@ -168,6 +168,7 @@ def train(name_model, dataPath, maskPath):
     print("... Spliting")
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
+    print("*****{}*****".format(train_mask.shape))
     model = vae(encoder(), decoder())
     model.compile(optimizer=Adam(lr=1e-6))
 
