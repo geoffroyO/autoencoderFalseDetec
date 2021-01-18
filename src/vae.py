@@ -196,4 +196,4 @@ if __name__ == '__main__':
     dataPath = "../data/CASIA.numpy/all_to_train.npy"
     maskPath = "../data/CASIA.numpy/all_to_train_msk.npy"
 
-    train("vae_250.h5", dataPath, maskPath)
+    train("vae_250.hdf5", dataPath, maskPath)
