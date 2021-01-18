@@ -83,8 +83,6 @@ def decoder():
 
 
 def dicriminative_error(error, mask):
-    print(error)
-    print(mask)
     mask1 = 1 - mask
     error1 = tf.math.multiply(error, mask1)
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
@@ -108,8 +106,8 @@ class vae(keras.Model):
 
     def train_step(self, data):
         if isinstance(data, tuple):
-            data = data[0]
             mask = data[1]
+            data = data[0]
 
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
@@ -138,8 +136,8 @@ class vae(keras.Model):
 
     def test_step(self, data):
         if isinstance(data, tuple):
-            data = data[0]
             mask = data[1]
+            data = data[0]
 
         dataSrm = self.srmConv(data)
         z_mean, z_log_var, z = self.encoder(dataSrm)
