@@ -1,8 +1,9 @@
 import numpy as np
 import cv2
 from tqdm import tqdm
-
-import src.vae as vae
+import sys
+sys.path.append('../src/vae.py')
+import vae as vae
 
 
 def predendVae4K(model, img, block_size):
@@ -32,7 +33,9 @@ def predendVae4K(model, img, block_size):
 def test_endVae4K(pathModel):
     encoder = vae.encoder()
     decoder = vae.decoder()
+
     model = vae.srmAno(encoder, decoder)
+
     path = "./lnoise/1/0.png"
     img = cv2.imread(path, 1)
     img = img[..., ::-1]
