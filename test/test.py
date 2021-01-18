@@ -4,7 +4,7 @@ from tqdm import tqdm
 import sys
 
 sys.path.append('../src/')
-import src.vae as vae
+import vae as vae
 
 
 def predendVae4K(model, img, block_size):
