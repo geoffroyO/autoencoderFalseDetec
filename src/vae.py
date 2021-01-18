@@ -95,13 +95,16 @@ class vae(keras.Model):
         super(vae, self).__init__(**kwargs)
         self.srmConv = Conv2D(30, kernel_size=[5, 5], kernel_initializer=kernel_init,
                               strides=1, padding='same', trainable=False)
+        self.norm = BatchNormalization()
         self.encoder = encoder
         self.decoder = decoder
 
     def call(self, inputs, **kwargs):
         inputsSrm = self.srmConv(inputs)
+        inputsSrm = self.norm(inputsSrm)
         _, _, z = self.encoder(inputsSrm)
         reconstruction = self.decoder(z)
+        reconstruction = self.norm(reconstruction)
         return inputsSrm, reconstruction
 
     def train_step(self, data):
@@ -111,10 +114,10 @@ class vae(keras.Model):
 
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
-            dataSrm = BatchNormalization()(dataSrm)
+            dataSrm = self.norm(dataSrm)
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
-            reconstruction = BatchNormalization()(reconstruction)
+            reconstruction = self.norm(reconstruction)
 
             L2 = squared_difference(dataSrm, reconstruction)
             error = tf.reduce_mean(L2, axis=-1)
@@ -142,10 +145,10 @@ class vae(keras.Model):
             data = data[0]
 
         dataSrm = self.srmConv(data)
-        dataSrm = BatchNormalization()(dataSrm)
+        dataSrm = self.norm(dataSrm)
         z_mean, z_log_var, z = self.encoder(dataSrm)
         reconstruction = self.decoder(z)
-        reconstruction = BatchNormalization()(reconstruction)
+        reconstruction = self.norm(reconstruction)
 
         L2 = squared_difference(dataSrm, reconstruction)
         error = tf.reduce_mean(L2, axis=-1)
