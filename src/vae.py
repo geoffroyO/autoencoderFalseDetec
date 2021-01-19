@@ -112,8 +112,10 @@ def decoder():
 def dicriminative_error(error, mask):
     mask1 = 1 - mask
     error1 = tf.math.multiply(error, mask1)
+    print("*******")
     print(error1)
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
+    print("********")
     print(N1)
     mean = tf.math.divide(tf.reduce_sum(error1, axis=[1, 2]), N1)
     return mean
@@ -220,7 +222,7 @@ def train(name_model, dataPath, maskPath):
 
     callbacks_list = [checkpoint, csv_logger]
 
-    model.fit(train_data, train_mask, epochs=250, batch_size=128,
+    model.fit(train_data, train_mask, epochs=1, batch_size=1,
               validation_data=(test_data, test_mask),
               callbacks=callbacks_list)
 
