@@ -7,9 +7,9 @@ sys.path.append('../src/')
 import vae as vae
 
 
-def predendVae4K(model, img, block_size):
+def predendVae4K(model, img, block_size, size_feat):
     N, M, C = img.shape
-    reconstuction_img, features_img, mask_error = np.zeros((N, M, 30)), np.zeros((N, M, 30)), np.zeros((N, M))
+    reconstuction_img, features_img, mask_error = np.zeros((N, M, size_feat)), np.zeros((N, M, size_feat)), np.zeros((N, M))
 
     blocks = []
     print("... Creating blocks")
@@ -58,7 +58,7 @@ def test_endVae4K(pathModel):
             img = img[..., ::-1]
             img = img.astype('float32') / 255.
 
-            error, features, reconstruction = predendVae4K(model, img, 32)
+            error, features, reconstruction = predendVae4K(model, img, 32, 3)
 
             np.save("./lnoise/{}/".format(file) + "err_{}.npy".format(noise), error)
             np.save("./lnoise/{}/".format(file) + "features_{}.npy".format(noise), features)
@@ -66,6 +66,6 @@ def test_endVae4K(pathModel):
 
 
 if __name__ == '__main__':
-    pathModel = "../models/vae_250.hdf5"
+    pathModel = "../models/srm_reduced_vae_250.hdf5"
 
     test_endVae4K(pathModel)
