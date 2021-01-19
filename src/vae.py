@@ -112,11 +112,9 @@ def decoder():
 def dicriminative_error(error, mask):
     mask1 = 1 - mask
     error1 = tf.math.multiply(error, mask1)
-    print("*******")
-    print(error1)
+
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
-    print("********")
-    print(N1)
+
     mean = tf.math.divide_no_nan(tf.reduce_sum(error1, axis=[1, 2]), N1)
     return mean
 
@@ -149,12 +147,10 @@ class vae(keras.Model):
 
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
-            print('******')
-            print(dataSrm)
+
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
-            print('*****')
-            print(reconstruction)
+
             L2 = squared_difference(dataSrm, reconstruction)
             error = tf.reduce_mean(L2, axis=-1)
 
@@ -208,7 +204,7 @@ def train(name_model, dataPath, maskPath):
     mask = np.load(maskPath)
 
     print("... Spliting")
-    train_data, test_data, train_mask, test_mask = data, data, mask, mask #train_test_split(data, mask, random_state=42)
+    train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
     model = vae(encoder(), decoder())
     model.compile(optimizer=Adam(lr=1e-6), run_eagerly=True)
@@ -226,7 +222,7 @@ def train(name_model, dataPath, maskPath):
 
 
 if __name__ == '__main__':
-    dataPath = "../data/CASIA.numpy/mini.npy"
-    maskPath = "../data/CASIA.numpy/mini_msk.npy"
+    dataPath = "../data/CASIA.numpy/all_to_train.npy"
+    maskPath = "../data/CASIA.numpy/all_to_train_msk.npy"
 
-    train("mini_vae_250", dataPath, maskPath)
+    train("vae_250", dataPath, maskPath)
