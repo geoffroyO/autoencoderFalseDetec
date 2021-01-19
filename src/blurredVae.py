@@ -200,6 +200,6 @@ if __name__ == '__main__':
     csv_logger = CSVLogger("blurredVae_250.csv", append=True)
     callbacks_list = [checkpoint, csv_logger]
 
-    model.fit(data, epochs=250, batch_size=128,
-              validation_data=(data, data),
+    model.fit(train_data, epochs=250, batch_size=128,
+              validation_data=(test_data, test_data),
               callbacks=callbacks_list)
