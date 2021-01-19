@@ -97,4 +97,4 @@ def extract_no_border(type):
 
 
 if __name__ == '__main__':
-    save_data()
+    extract_no_border('all_to_train')
