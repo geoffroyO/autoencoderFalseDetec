@@ -122,7 +122,7 @@ def dicriminative_error(error, mask):
 class vae(keras.Model):
     def __init__(self, encoder, decoder, **kwargs):
         super(vae, self).__init__(**kwargs)
-        self.srmConv = Conv2D(30, kernel_size=[5, 5], kernel_initializer=kernel_init(),
+        self.srmConv = Conv2D(30, kernel_size=[5, 5], kernel_initializer=kernel_init,
                               strides=1, padding='same', trainable=False)
         self.norm = BatchNormalization()
         self.encoder = encoder
