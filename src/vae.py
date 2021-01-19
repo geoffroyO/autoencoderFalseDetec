@@ -159,6 +159,8 @@ class vae(keras.Model):
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
             reconstruction = self.norm(reconstruction)
+            print('******')
+            print(reconstruction)
 
             L2 = squared_difference(dataSrm, reconstruction)
             error = tf.reduce_mean(L2, axis=-1)
