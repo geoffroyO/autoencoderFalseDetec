@@ -117,7 +117,7 @@ def dicriminative_error(error, mask):
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
     print("********")
     print(N1)
-    mean = tf.math.divide(tf.reduce_sum(error1, axis=[1, 2]), N1)
+    mean = tf.math.divide_no_nan(tf.reduce_sum(error1, axis=[1, 2]), N1)
     return mean
 
 
@@ -151,7 +151,11 @@ class vae(keras.Model):
 
         with tf.GradientTape() as tape:
             dataSrm = self.srmConv(data)
+            print('******')
+            print(dataSrm)
             dataSrm = self.norm(dataSrm)
+            print('*****')
+            print(dataSrm)
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
             reconstruction = self.norm(reconstruction)
