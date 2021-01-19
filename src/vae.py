@@ -67,7 +67,7 @@ class Sampling(tf.keras.layers.Layer):
 
 def encoder():
     latent_dim = 128
-    encoder_inputs = Input(shape=(32, 32, 3))
+    encoder_inputs = Input(shape=(32, 32, 30))
 
     x = Conv2D(32, 5, activation='relu', strides=2, padding="same")(encoder_inputs)
     x = BatchNormalization()(x)
@@ -103,7 +103,7 @@ def decoder():
     x = Conv2DTranspose(32, 3, strides=2, activation='relu', padding="same")(x)
     x = BatchNormalization()(x)
 
-    decoder_outputs = Conv2DTranspose(3, 3, activation='sigmoid', padding="same")(x)
+    decoder_outputs = Conv2DTranspose(30, 3, activation='sigmoid', padding="same")(x)
 
     decoder = Model(latent_inputs, decoder_outputs, name="decoder")
     return decoder
@@ -112,7 +112,9 @@ def decoder():
 def dicriminative_error(error, mask):
     mask1 = 1 - mask
     error1 = tf.math.multiply(error, mask1)
+    print(error1)
     N1 = tf.reduce_sum(mask1, axis=[1, 2])
+    print(N1)
     mean = tf.math.divide(tf.reduce_sum(error1, axis=[1, 2]), N1)
     return mean
 
@@ -120,7 +122,7 @@ def dicriminative_error(error, mask):
 class vae(keras.Model):
     def __init__(self, encoder, decoder, **kwargs):
         super(vae, self).__init__(**kwargs)
-        self.srmConv = Conv2D(3, kernel_size=[5, 5], kernel_initializer=_build_SRM_kernel(),
+        self.srmConv = Conv2D(30, kernel_size=[5, 5], kernel_initializer=kernel_init(),
                               strides=1, padding='same', trainable=False)
         self.norm = BatchNormalization()
         self.encoder = encoder
@@ -209,7 +211,7 @@ def train(name_model, dataPath, maskPath):
     train_data, test_data, train_mask, test_mask = train_test_split(data, mask, random_state=42)
 
     model = vae(encoder(), decoder())
-    model.compile(optimizer=Adam(lr=1e-6))
+    model.compile(optimizer=Adam(lr=1e-6), run_eagerly=True)
 
     checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/{}.hdf5".format(name_model),
                                                     monitor='val_loss', verbose=1,
@@ -224,7 +226,7 @@ def train(name_model, dataPath, maskPath):
 
 
 if __name__ == '__main__':
-    dataPath = "../data/CASIA.numpy/all_to_train.npy"
-    maskPath = "../data/CASIA.numpy/all_to_train_msk.npy"
+    dataPath = "../data/CASIA.numpy/mini.npy"
+    maskPath = "../data/CASIA.numpy/mini_msk.npy"
 
-    train("srm_reduced_vae_250", dataPath, maskPath)
+    train("mini_vae_250", dataPath, maskPath)
