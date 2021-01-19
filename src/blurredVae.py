@@ -144,7 +144,7 @@ class srmAno(keras.Model):
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
+            reconstruction_loss = tf.reduce_mean(L1)
 
             kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
             kl_loss = tf.reduce_mean(kl_loss)
