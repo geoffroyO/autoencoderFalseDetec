@@ -1,9 +1,7 @@
 import numpy as np
 import cv2
 from tqdm import tqdm
-import sys
 
-sys.path.append('../src/')
 import vae as vae
 import blurredVae as b
 
@@ -39,10 +37,10 @@ def predendVae4K(model, img, block_size, size_feat):
 
 
 def test_endVae4K(pathModel):
-    encoder = b.encoder()
-    decoder = b.decoder()
+    encoder = vae.encoder()
+    decoder = vae.decoder()
 
-    model = b.srmAno(encoder, decoder)
+    model = vae.vae(encoder, decoder)
 
     path = "./lnoise/1/0.png"
     img = cv2.imread(path, 1)
@@ -59,7 +57,7 @@ def test_endVae4K(pathModel):
             img = img[..., ::-1]
             img = img.astype('float32') / 255.
 
-            error, features, reconstruction = predendVae4K(model, img, 32, 3)
+            error, features, reconstruction = predendVae4K(model, img, 32, 30)
 
             np.save("./lnoise/{}/".format(file) + "err_{}.npy".format(noise), error)
             np.save("./lnoise/{}/".format(file) + "features_{}.npy".format(noise), features)
@@ -67,6 +65,6 @@ def test_endVae4K(pathModel):
 
 
 if __name__ == '__main__':
-    pathModel = "../models/blurredVae_250.hdf5"
+    pathModel = "../models/vae_250.hdf5"
 
     test_endVae4K(pathModel)
