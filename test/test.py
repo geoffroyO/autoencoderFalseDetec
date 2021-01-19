@@ -34,7 +34,7 @@ def predendVae4K(model, img, block_size):
 
             count += 1
 
-    return mask_error
+    return mask_error, features_img, reconstuction_img
 
 
 def test_endVae4K(pathModel):
@@ -58,8 +58,11 @@ def test_endVae4K(pathModel):
             img = img[..., ::-1]
             img = img.astype('float32') / 255.
 
-            error = predendVae4K(model, img, 32)
-            np.save("./lnoise/{}/".format(file) + "{}.npy".format(noise), error)
+            error, features, reconstruction = predendVae4K(model, img, 32)
+
+            np.save("./lnoise/{}/".format(file) + "err_{}.npy".format(noise), error)
+            np.save("./lnoise/{}/".format(file) + "features_{}.npy".format(noise), features)
+            np.save("./lnoise/{}/".format(file) + "reconstruction_{}.npy".format(noise), reconstruction)
 
 
 if __name__ == '__main__':
