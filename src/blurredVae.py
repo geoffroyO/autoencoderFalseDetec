@@ -144,7 +144,7 @@ class srmAno(keras.Model):
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-            reconstruction_loss = tf.reduce_mean(L1)
+            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
 
             kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
             kl_loss = tf.reduce_mean(kl_loss)
@@ -198,9 +198,8 @@ if __name__ == '__main__':
                                                     monitor='val_loss', verbose=1,
                                                     save_best_only=True, mode='min')
     csv_logger = CSVLogger("blurredVae_250.csv", append=True)
-
     callbacks_list = [checkpoint, csv_logger]
 
-    model.fit(data, epochs=1, batch_size=1,
+    model.fit(data, epochs=250, batch_size=128,
               validation_data=(data, data),
               callbacks=callbacks_list)
