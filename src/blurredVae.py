@@ -121,13 +121,10 @@ class srmAno(keras.Model):
 
         features = self.srmConv2D(inputs)
         features = (features - noise_blurred) / 2 + 0.5
-
         _, _, z = self.encoder(features)
-
         reconstruction = self.decoder(z)
         L1 = absolute_difference(inputs, reconstruction, reduction=Reduction.NONE)
         error = tf.reduce_sum(L1, axis=-1)
-
         return features, reconstruction, error
 
     def train_step(self, data):
@@ -145,7 +142,7 @@ class srmAno(keras.Model):
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=-1))
+            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
 
             kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
             kl_loss = tf.reduce_mean(kl_loss)
@@ -173,7 +170,7 @@ class srmAno(keras.Model):
         reconstruction = self.decoder(z)
 
         L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-        reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=-1))
+        reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
 
         kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
         kl_loss = tf.reduce_mean(kl_loss)
@@ -188,16 +185,16 @@ class srmAno(keras.Model):
 
 
 if __name__ == '__main__':
-    data = np.load("../data/CASIA.numpy/all_to_train_ori.npy")
+    data = np.load("./data_to_load/4K_data.npy")
 
     train_data, test_data = data[:int(0.75*len(data))], data[int(0.75*len(data)):]
     model = srmAno(encoder(), decoder())
     model.compile(optimizer=Adam(lr=1e-6))
 
-    checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/BlurredVae_250.hdf5",
+    checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/srmBlurredEndAno4K_250.h5",
                                                     monitor='val_loss', verbose=1,
                                                     save_best_only=True, mode='min')
-    csv_logger = CSVLogger("blurredVae_250.csv", append=True)
+    csv_logger = CSVLogger("srmBlurredEndAno4K_250.csv", append=True)
 
     callbacks_list = [checkpoint, csv_logger]
 
