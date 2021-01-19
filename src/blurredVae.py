@@ -189,7 +189,7 @@ class srmAno(keras.Model):
 
 if __name__ == '__main__':
     data = np.load("../data/CASIA.numpy/all_to_train_ori.npy")
-    data = data[:int(0.60*len(data))]
+
     train_data, test_data = data[:int(0.75*len(data))], data[int(0.75*len(data)):]
     model = srmAno(encoder(), decoder())
     model.compile(optimizer=Adam(lr=1e-6))
