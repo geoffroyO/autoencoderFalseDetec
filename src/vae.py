@@ -125,19 +125,17 @@ class vae(keras.Model):
     def __init__(self, encoder, decoder, **kwargs):
         super(vae, self).__init__(**kwargs)
         self.srmConv = Conv2D(30, kernel_size=[5, 5], kernel_initializer=kernel_init,
-                              strides=1, padding='same', trainable=False)
+                              strides=1, padding='same', trainable=False, activation='sigmoid')
         self.norm = BatchNormalization()
         self.encoder = encoder
         self.decoder = decoder
 
     def call(self, inputs, **kwargs):
         inputsSrm = self.srmConv(inputs)
-        inputsSrm = self.norm(inputsSrm)
 
         _, _, z = self.encoder(inputsSrm)
 
         reconstruction = self.decoder(z)
-        reconstruction = self.norm(reconstruction)
 
         error = squared_difference(inputsSrm, reconstruction)
         error = tf.reduce_sum(error, axis=-1)
@@ -153,15 +151,10 @@ class vae(keras.Model):
             dataSrm = self.srmConv(data)
             print('******')
             print(dataSrm)
-            dataSrm = self.norm(dataSrm)
-            print('*****')
-            print(dataSrm)
             z_mean, z_log_var, z = self.encoder(dataSrm)
             reconstruction = self.decoder(z)
-            reconstruction = self.norm(reconstruction)
-            print('******')
+            print('*****')
             print(reconstruction)
-
             L2 = squared_difference(dataSrm, reconstruction)
             error = tf.reduce_mean(L2, axis=-1)
 
@@ -188,10 +181,9 @@ class vae(keras.Model):
             data = data[0]
 
         dataSrm = self.srmConv(data)
-        dataSrm = self.norm(dataSrm)
+
         z_mean, z_log_var, z = self.encoder(dataSrm)
         reconstruction = self.decoder(z)
-        reconstruction = self.norm(reconstruction)
 
         L2 = squared_difference(dataSrm, reconstruction)
         error = tf.reduce_mean(L2, axis=-1)
