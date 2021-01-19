@@ -5,6 +5,7 @@ import sys
 
 sys.path.append('../src/')
 import vae as vae
+import blurredVae as b
 
 
 def predendVae4K(model, img, block_size, size_feat):
@@ -38,10 +39,10 @@ def predendVae4K(model, img, block_size, size_feat):
 
 
 def test_endVae4K(pathModel):
-    encoder = vae.encoder()
-    decoder = vae.decoder()
+    encoder = b.encoder()
+    decoder = b.decoder()
 
-    model = vae.vae(encoder, decoder)
+    model = b.srmAno(encoder, decoder)
 
     path = "./lnoise/1/0.png"
     img = cv2.imread(path, 1)
