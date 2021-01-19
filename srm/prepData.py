@@ -90,11 +90,11 @@ def extract_no_border(type):
 
     for k in range(n):
         s = np.sum(labels[k])
-        if s == 0 or s == 32*32:
+        if s == 0:
             inside.append(data[k])
 
-    np.svae("../data/CASIA.numpy/{}_inside.npy".format(type).format(type), inside)
+    np.svae("../data/CASIA.numpy/{}_ori.npy".format(type), inside)
 
 
 if __name__ == '__main__':
-    save_data()
+    extract_no_border('all_to_train')

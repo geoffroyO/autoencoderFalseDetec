@@ -54,8 +54,6 @@ def gaussian_blur(data, kernel_size=11, sigma=5):
 
 
 class Sampling(tf.keras.layers.Layer):
-    """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
-
     def call(self, inputs, **kwargs):
         z_mean, z_log_var = inputs
         batch = tf.shape(z_mean)[0]
@@ -123,10 +121,13 @@ class srmAno(keras.Model):
 
         features = self.srmConv2D(inputs)
         features = (features - noise_blurred) / 2 + 0.5
+
         _, _, z = self.encoder(features)
+
         reconstruction = self.decoder(z)
         L1 = absolute_difference(inputs, reconstruction, reduction=Reduction.NONE)
         error = tf.reduce_sum(L1, axis=-1)
+
         return features, reconstruction, error
 
     def train_step(self, data):
@@ -144,7 +145,7 @@ class srmAno(keras.Model):
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
+            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=-1))
 
             kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
             kl_loss = tf.reduce_mean(kl_loss)
@@ -172,7 +173,7 @@ class srmAno(keras.Model):
         reconstruction = self.decoder(z)
 
         L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-        reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
+        reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=-1))
 
         kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
         kl_loss = tf.reduce_mean(kl_loss)
