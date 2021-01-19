@@ -9,7 +9,7 @@ import vae as vae
 
 def predendVae4K(model, img, block_size):
     N, M, C = img.shape
-    mask_error = np.zeros((N, M))
+    reconstuction_img, features_img, mask_error = np.zeros((N, M, 30)), np.zeros((N, M, 30)), np.zeros((N, M))
 
     blocks = []
     print("... Creating blocks")
@@ -17,7 +17,7 @@ def predendVae4K(model, img, block_size):
         for j in range(0, M - block_size + 1, block_size):
             blocks.append(img[i:(i + block_size), j:(j + block_size)])
 
-    error = model.predict(np.array(blocks))
+    error, reconstruction, features = model.predict(np.array(blocks))
 
     count = 0
     print("... Prediction for each blocks")
@@ -25,6 +25,12 @@ def predendVae4K(model, img, block_size):
         for j in range(0, M - block_size + 1, block_size):
             mask_error_pred = error[count]
             mask_error[i:(i + block_size), j:(j + block_size)] += mask_error_pred
+
+            block_reconstruction = reconstruction[count]
+            reconstuction_img[i:(i + block_size), j:(j + block_size)] += block_reconstruction
+
+            block_features = features[count]
+            features_img[i:(i + block_size), j:(j + block_size)] += block_features
 
             count += 1
 

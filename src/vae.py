@@ -102,12 +102,16 @@ class vae(keras.Model):
     def call(self, inputs, **kwargs):
         inputsSrm = self.srmConv(inputs)
         inputsSrm = self.norm(inputsSrm)
+
         _, _, z = self.encoder(inputsSrm)
+
         reconstruction = self.decoder(z)
         reconstruction = self.norm(reconstruction)
+
         error = squared_difference(inputsSrm, reconstruction)
-        error = tf.reduce_mean(error, axis=-1)
-        return error
+        error = tf.reduce_sum(error, axis=-1)
+
+        return error, reconstruction, inputsSrm
 
     def train_step(self, data):
         if isinstance(data, tuple):
