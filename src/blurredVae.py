@@ -134,15 +134,21 @@ class srmAno(keras.Model):
         with tf.GradientTape() as tape:
             blurred = tf.stop_gradient(gaussian_blur(data, kernel_size=3, sigma=5))
             noise_blurred = self.srmConv2D(blurred)
+            print("*******")
+            print(noise_blurred)
 
             features = self.srmConv2D(data)
             features = (features - noise_blurred)/2 + 0.5
+            print("*****")
+            print(features)
 
             z_mean, z_log_var, z = self.encoder(features)
             reconstruction = self.decoder(z)
 
             L1 = absolute_difference(features, reconstruction, reduction=Reduction.NONE)
-            reconstruction_loss = tf.reduce_mean(tf.reduce_sum(L1, axis=[1, 2, 3]))
+            reconstruction_loss = tf.reduce_mean(L1)
+            print("*****")
+            print(L1)
 
             kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
             kl_loss = tf.reduce_mean(kl_loss)
@@ -185,19 +191,20 @@ class srmAno(keras.Model):
 
 
 if __name__ == '__main__':
-    data = np.load("./data_to_load/4K_data.npy")
+    data = np.load("./data/mini.npy")
 
-    train_data, test_data = data[:int(0.75*len(data))], data[int(0.75*len(data)):]
+    # train_data, test_data = data[:int(0.75*len(data))], data[int(0.75*len(data)):]
+
     model = srmAno(encoder(), decoder())
-    model.compile(optimizer=Adam(lr=1e-6))
+    model.compile(optimizer=Adam(lr=1e-6), run_eagerly=True)
 
-    checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/srmBlurredEndAno4K_250.h5",
+    checkpoint = tf.keras.callbacks.ModelCheckpoint("../models/blurredVae_250.hdf5",
                                                     monitor='val_loss', verbose=1,
                                                     save_best_only=True, mode='min')
-    csv_logger = CSVLogger("srmBlurredEndAno4K_250.csv", append=True)
+    csv_logger = CSVLogger("blurredVae_250.csv", append=True)
 
     callbacks_list = [checkpoint, csv_logger]
 
-    model.fit(train_data, epochs=250, batch_size=128,
-              validation_data=(test_data, test_data),
+    model.fit(data, epochs=1, batch_size=1,
+              validation_data=(data, data),
               callbacks=callbacks_list)
