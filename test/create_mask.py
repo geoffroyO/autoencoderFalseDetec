@@ -1,10 +1,11 @@
 import numpy as np
 from tqdm import tqdm
-import matplolib.pyplot as plt
+import matplotlib.pyplot as plt
 
 from sklearn.cluster import KMeans
 import skimage.morphology as morph
 from scipy.ndimage.measurements import label
+
 
 def gen_msk():
     for noise in tqdm([20, 40, 60, 80, 100]):
@@ -53,17 +54,19 @@ def gen_msk():
                         count[lab - 1] += 1
 
             error_final = np.zeros(error.shape)
-            for i in range(n):
-                for j in range(m):
-                    if labeled_array[i, j] == np.argmax(count) + 1:
-                        error_final[i, j] = 1
+            if count:
+                for i in range(n):
+                    for j in range(m):
+                        if labeled_array[i, j] == np.argmax(count) + 1:
+                            error_final[i, j] = 1
 
             """ Morphologie """
             closing_2 = morph.binary_closing(error_final, morph.square(15))
             dilatation = morph.binary_dilation(closing_2)
 
-            plt.imsave("./lnoise/{}/".format(k) + "{}_gt.png".format(noise), format='png', cmap='gray')
+            plt.imsave("./lnoise/{}/".format(k) + "{}_gt.png".format(noise), dilatation, format='png', cmap='gray')
     return None
+
 
 if __name__ == '__main__':
     gen_msk()
