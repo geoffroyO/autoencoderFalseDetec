@@ -67,12 +67,12 @@ def predendVae(model, img, block_size):
     return reconstuction_img, features_img, mask_error
 
 def test_endVae():
-    pathModel = "../../models/blurredVae_250.hdf5"
+    pathModel = "../models/blurredVae_250.hdf5"
 
     encoder = b.encoder()
     decoder = b.decoder()
     model = b.srmAno(encoder, decoder)
-    path = "{}.jpg".format(1)
+    path = "./easy_test/{}.jpg".format(1)
     img = cv2.imread(path, 1)
     img = img[..., ::-1]
     img = img.astype('float32') / 255.
@@ -88,9 +88,10 @@ def test_endVae():
         img = img.astype('float32') / 255.
 
         reconstruction, features, error = predendVae(model, img, 32)
-        np.save("./img_test/{}_reconstruction.npy".format(k), reconstruction)
-        np.save("./img_test/{}_features.npy".format(k), features)
-        np.save("./img_test/{}_error.npy".format(k), error)
+        np.save("./easy_test/{}_reconstruction.npy".format(k), reconstruction)
+        np.save("./easy_test/{}_features.npy".format(k), features)
+        np.save("./easy_test/{}_error.npy".format(k), error)
+
 
 if __name__ == '__main__':
     test_endVae()
