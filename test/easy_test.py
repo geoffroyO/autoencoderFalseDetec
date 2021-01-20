@@ -3,10 +3,7 @@ import cv2
 from tqdm import tqdm
 from tensorflow.python.keras import Input, Model
 
-import anodec as ano
-import lightfeaturesextract as lf
-import postTreat as ft
-import endVae as ev
+import blurredVae as b
 
 
 def enumMatrix(N, M, block_size):
@@ -72,9 +69,9 @@ def predendVae(model, img, block_size):
 def test_endVae():
     pathModel = "../../models/blurredVae_250.hdf5"
 
-    encoder = ev.encoder()
-    decoder = ev.decoder()
-    model = ev.srmAno(encoder, decoder)
+    encoder = b.encoder()
+    decoder = b.decoder()
+    model = b.srmAno(encoder, decoder)
     path = "{}.jpg".format(1)
     img = cv2.imread(path, 1)
     img = img[..., ::-1]
@@ -94,3 +91,6 @@ def test_endVae():
         np.save("./img_test/{}_reconstruction.npy".format(k), reconstruction)
         np.save("./img_test/{}_features.npy".format(k), features)
         np.save("./img_test/{}_error.npy".format(k), error)
+
+if __name__ == '__main__':
+    test_endVae()
