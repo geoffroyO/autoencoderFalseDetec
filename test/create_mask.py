@@ -8,7 +8,7 @@ from scipy.ndimage.measurements import label
 
 
 def gen_msk():
-    for noise in tqdm([20, 40, 60, 80, 100]):
+    for noise in tqdm([0, 20, 40, 60, 80, 100]):
         for k in tqdm(range(1, 49)):
             features = np.load("./lnoise/{}/".format(k)+"b_features_{}.npy".format(noise))
             reconstruction = np.load("./lnoise/{}/".format(k)+"b_features_{}.npy".format(noise))
