@@ -138,7 +138,7 @@ class vae(keras.Model):
         error = squared_difference(inputsSrm, reconstruction)
         error = tf.reduce_sum(error, axis=-1)
 
-        return error, reconstruction, inputsSrm
+        return inputsSrm, reconstruction, error
 
     def train_step(self, data):
         if isinstance(data, tuple):

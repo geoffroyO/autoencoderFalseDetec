@@ -4,7 +4,7 @@ from tqdm import tqdm
 from tensorflow.python.keras import Input, Model
 
 import blurredVae as b
-
+import vae as v
 
 def enumMatrix(N, M, block_size):
     enum = np.zeros((N, M))
@@ -14,28 +14,9 @@ def enumMatrix(N, M, block_size):
     return enum
 
 
-def pred(model, img, block_size):
-    N, M, _ = img.shape
-    mask = np.zeros((N, M))
-    blocks = []
-    for i in range(N-block_size+1):
-        for j in range(M-block_size+1):
-            blocks.append(img[i:(i+block_size), j:(j+block_size)])
-    blocks = np.array(blocks)
-    pred = model.predict(blocks)
-    count = 0
-    for i in range(N-block_size+1):
-        for j in range(M-block_size+1):
-            mask_pred = pred[count]
-            mask[i:(i+block_size), j:(j+block_size)] += mask_pred[0]
-            count += 1
-    enum = enumMatrix(N, M, block_size)
-    mask /= enum
-    return mask
-
 def predendVae(model, img, block_size):
     N, M, C = img.shape
-    reconstuction_img, features_img, mask_error = np.zeros((N, M, C)), np.zeros((N, M, C)), np.zeros((N, M))
+    reconstuction_img, features_img, mask_error = np.zeros((N, M, 30)), np.zeros((N, M, 30)), np.zeros((N, M)) #modif
 
     blocks = []
     print("... Creating blocks")
@@ -61,17 +42,18 @@ def predendVae(model, img, block_size):
     enum = enumMatrix(N, M, block_size)
     mask_error /= enum
     enum_3D = np.dstack((enum, enum))
-    enum_3D = np.dstack((enum_3D, enum))
+    for k in range(29): # added
+        enum_3D = np.dstack((enum_3D, enum))
     reconstuction_img /= enum_3D
     features_img /= enum_3D
     return reconstuction_img, features_img, mask_error
 
 def test_endVae():
-    pathModel = "../models/blurredVae_250.hdf5"
+    pathModel = "../models/vae_250.hdf5"
 
-    encoder = b.encoder()
-    decoder = b.decoder()
-    model = b.srmAno(encoder, decoder)
+    encoder = v.encoder()
+    decoder = v.decoder()
+    model = v.vae(encoder, decoder)
     path = "./easy_test/{}.jpg".format(1)
     img = cv2.imread(path, 1)
     img = img[..., ::-1]
@@ -88,9 +70,9 @@ def test_endVae():
         img = img.astype('float32') / 255.
 
         reconstruction, features, error = predendVae(model, img, 32)
-        np.save("./easy_test/{}_reconstruction.npy".format(k), reconstruction)
-        np.save("./easy_test/{}_features.npy".format(k), features)
-        np.save("./easy_test/{}_error.npy".format(k), error)
+        np.save("./easy_test/{}_reconstruction_v.npy".format(k), reconstruction)
+        np.save("./easy_test/{}_features_v.npy".format(k), features)
+        np.save("./easy_test/{}_error_v.npy".format(k), error)
 
 
 if __name__ == '__main__':
