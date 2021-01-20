@@ -16,7 +16,7 @@ def predendVae4K(model, img, block_size, size_feat):
         for j in range(0, M - block_size + 1, block_size):
             blocks.append(img[i:(i + block_size), j:(j + block_size)])
 
-    error, reconstruction, features = model.predict(np.array(blocks))
+    features, reconstruction, error = model.predict(np.array(blocks))
 
     count = 0
     print("... Prediction for each blocks")
@@ -37,10 +37,10 @@ def predendVae4K(model, img, block_size, size_feat):
 
 
 def test_endVae4K(pathModel):
-    encoder = vae.encoder()
-    decoder = vae.decoder()
+    encoder = b.encoder()
+    decoder = b.decoder()
 
-    model = vae.vae(encoder, decoder)
+    model = b.srmAno(encoder, decoder)
 
     path = "./lnoise/1/0.png"
     img = cv2.imread(path, 1)
@@ -57,14 +57,14 @@ def test_endVae4K(pathModel):
             img = img[..., ::-1]
             img = img.astype('float32') / 255.
 
-            error, features, reconstruction = predendVae4K(model, img, 32, 30)
+            error, features, reconstruction = predendVae4K(model, img, 32, 3)
 
-            np.save("./lnoise/{}/".format(file) + "err_{}.npy".format(noise), error)
-            np.save("./lnoise/{}/".format(file) + "features_{}.npy".format(noise), features)
-            np.save("./lnoise/{}/".format(file) + "reconstruction_{}.npy".format(noise), reconstruction)
+            np.save("./lnoise/{}/".format(file) + "b_err_{}.npy".format(noise), error)
+            np.save("./lnoise/{}/".format(file) + "b_features_{}.npy".format(noise), features)
+            np.save("./lnoise/{}/".format(file) + "b_reconstruction_{}.npy".format(noise), reconstruction)
 
 
 if __name__ == '__main__':
-    pathModel = "../models/vae_250.hdf5"
+    pathModel = "../models/blurredVae_250.hdf5"
 
     test_endVae4K(pathModel)
