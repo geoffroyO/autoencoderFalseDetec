@@ -81,7 +81,7 @@ def test_endVae():
     model.load_weights(pathModel)
 
     for k in range(1, 4):
-        path = "{}.jpg".format(k)
+        path = "./easy_test/{}.jpg".format(k)
 
         img = cv2.imread(path, 1)
         img = img[..., ::-1]
