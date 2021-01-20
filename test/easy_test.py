@@ -25,6 +25,7 @@ def predendVae(model, img, block_size):
             blocks.append(img[i:(i+block_size), j:(j+block_size)])
 
     blocks = np.array(blocks)
+    print("******{}******".format(blocks.shape))
     features, reconstruction, error = model.predict(blocks)
     count = 0
     print("... Prediction for each blocks")
