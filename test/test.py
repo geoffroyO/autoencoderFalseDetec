@@ -65,6 +65,6 @@ def test_endVae4K(pathModel):
 
 
 if __name__ == '__main__':
-    pathModel = "../models/blurredVae_250.hdf5"
+    pathModel = "../models/srmBlurred_4K_250.hdf5"
 
     test_endVae4K(pathModel)
