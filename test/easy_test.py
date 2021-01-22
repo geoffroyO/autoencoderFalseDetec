@@ -20,8 +20,8 @@ def predendVae(model, img, block_size):
 
     blocks = []
     print("... Creating blocks")
-    for i in tqdm(range(N-block_size+1)):
-        for j in range(M-block_size+1):
+    for i in tqdm(range(N-block_size+1, 32)):
+        for j in range(M-block_size+1, 32):
             blocks.append(img[i:(i+block_size), j:(j+block_size)])
 
     blocks = np.array(blocks)
@@ -29,8 +29,8 @@ def predendVae(model, img, block_size):
     features, reconstruction, error = model.predict(blocks)
     count = 0
     print("... Prediction for each blocks")
-    for i in tqdm(range(N-block_size+1)):
-        for j in range(M-block_size+1):
+    for i in tqdm(range(N-block_size+1, 32)):
+        for j in range(M-block_size+1, 32):
             mask_error_pred = error[count]
             mask_error[i:(i+block_size), j:(j+block_size)] += mask_error_pred
 
@@ -40,13 +40,7 @@ def predendVae(model, img, block_size):
             block_features = features[count]
             features_img[i:(i+block_size), j:(j+block_size)] += block_features
             count += 1
-    enum = enumMatrix(N, M, block_size)
-    mask_error /= enum
-    enum_3D = np.dstack((enum, enum))
-    for _ in range(28):
-        enum_3D = np.dstack((enum_3D, enum))
-    reconstuction_img /= enum_3D
-    features_img /= enum_3D
+
     return reconstuction_img, features_img, mask_error
 
 
