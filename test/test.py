@@ -37,10 +37,10 @@ def predendVae4K(model, img, block_size, size_feat):
 
 
 def test_endVae4K(pathModel):
-    encoder = b.encoder()
-    decoder = b.decoder()
+    encoder = vae.encoder()
+    decoder = vae.decoder()
 
-    model = b.srmAno(encoder, decoder)
+    model = vae.srmAno(encoder, decoder)
 
     path = "./lnoise/1/0.png"
     img = cv2.imread(path, 1)
