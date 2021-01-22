@@ -43,11 +43,12 @@ def predendVae(model, img, block_size):
     enum = enumMatrix(N, M, block_size)
     mask_error /= enum
     enum_3D = np.dstack((enum, enum))
-    for k in range(29): # added
+    for _ in range(28):
         enum_3D = np.dstack((enum_3D, enum))
     reconstuction_img /= enum_3D
     features_img /= enum_3D
     return reconstuction_img, features_img, mask_error
+
 
 def test_endVae():
     pathModel = "../models/vae_250.hdf5"
@@ -62,6 +63,8 @@ def test_endVae():
     model.predict(np.array([img[0:32, 0:32]]))
 
     model.load_weights(pathModel)
+    model.predict(np.array([img[0:32, 0:32]]))
+
 
     for k in range(1, 4):
         path = "./easy_test/{}.jpg".format(k)
