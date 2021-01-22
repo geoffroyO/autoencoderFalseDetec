@@ -57,14 +57,14 @@ def test_endVae4K(pathModel):
             img = img[..., ::-1]
             img = img.astype('float32') / 255.
 
-            error, features, reconstruction = predendVae4K(model, img, 32, 3)
+            error, features, reconstruction = predendVae4K(model, img, 32, 30)
 
-            np.save("./lnoise/{}/".format(file) + "b_err_{}.npy".format(noise), error)
-            np.save("./lnoise/{}/".format(file) + "b_features_{}.npy".format(noise), features)
-            np.save("./lnoise/{}/".format(file) + "b_reconstruction_{}.npy".format(noise), reconstruction)
+            np.save("./lnoise/{}/".format(file) + "v_err_{}.npy".format(noise), error)
+            np.save("./lnoise/{}/".format(file) + "v_features_{}.npy".format(noise), features)
+            np.save("./lnoise/{}/".format(file) + "v_reconstruction_{}.npy".format(noise), reconstruction)
 
 
 if __name__ == '__main__':
-    pathModel = "../models/srmBlurred_4K_250.hdf5"
+    pathModel = "../models/vae_250.hdf5"
 
     test_endVae4K(pathModel)
