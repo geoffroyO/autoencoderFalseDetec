@@ -40,7 +40,7 @@ def test_endVae4K(pathModel):
     encoder = vae.encoder()
     decoder = vae.decoder()
 
-    model = vae.srmAno(encoder, decoder)
+    model = vae.vae(encoder, decoder)
 
     path = "./lnoise/1/0.png"
     img = cv2.imread(path, 1)
