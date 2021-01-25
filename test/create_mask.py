@@ -64,7 +64,7 @@ def gen_msk():
             closing_2 = morph.binary_closing(error_final, morph.square(15))
             dilatation = morph.binary_dilation(closing_2)
 
-            plt.imsave("./rot_test/{}/".format(k) + "{}_gt.png".format(rot), dilatation, format='png', cmap='gray')
+            plt.imsave("./rot_test/{}/".format(k) + "{}_pred_gt.png".format(rot), dilatation, format='png', cmap='gray')
     return None
 
 
