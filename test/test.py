@@ -37,21 +37,21 @@ def predendVae4K(model, img, block_size, size_feat):
 
 
 def test_endVae4K(pathModel):
-    encoder = vae.encoder()
-    decoder = vae.decoder()
+    encoder = b.encoder()
+    decoder = b.decoder()
 
-    model = vae.vae(encoder, decoder)
+    model = b.srmAno(encoder, decoder)
 
-    path = "./lnoise/1/0.png"
+    path = "./rot_test/1/2.png"
     img = cv2.imread(path, 1)
     img = img[..., ::-1]
     img = img.astype('float32') / 255.
     model.predict(np.array([img[0:32, 0:32]]))
 
     model.load_weights(pathModel)
-    for noise in [0, 20, 40, 60, 80, 100]:
-        for file in range(1, 49):
-            path = "./lnoise/{}/".format(file) + "{}.png".format(noise)
+    for rot in [2, 4, 6, 8, 10, 20, 60, 180]:
+        for file in range(1, 11):
+            path = "./rot_test/{}/".format(file) + "{}.png".format(rot)
 
             img = cv2.imread(path, 1)
             img = img[..., ::-1]
@@ -59,12 +59,12 @@ def test_endVae4K(pathModel):
 
             error, features, reconstruction = predendVae4K(model, img, 32, 30)
 
-            np.save("./lnoise/{}/".format(file) + "v_err_{}.npy".format(noise), error)
-            np.save("./lnoise/{}/".format(file) + "v_features_{}.npy".format(noise), features)
-            np.save("./lnoise/{}/".format(file) + "v_reconstruction_{}.npy".format(noise), reconstruction)
+            np.save("./rot_test/{}/".format(file) + "b_err_{}.npy".format(rot), error)
+            np.save("./rot_test/{}/".format(file) + "b_features_{}.npy".format(rot), features)
+            np.save("./rot_test/{}/".format(file) + "b_reconstruction_{}.npy".format(rot), reconstruction)
 
 
 if __name__ == '__main__':
-    pathModel = "../models/vae_250.hdf5"
+    pathModel = "../models/srmBlurred_4K_250.hdf5"
 
     test_endVae4K(pathModel)
