@@ -8,10 +8,10 @@ from scipy.ndimage.measurements import label
 
 
 def gen_msk():
-    for noise in tqdm([0, 20, 40, 60, 80, 100]):
-        for k in tqdm(range(1, 49)):
-            features = np.load("./lnoise/{}/".format(k)+"b_features_{}.npy".format(noise))
-            reconstruction = np.load("./lnoise/{}/".format(k)+"b_features_{}.npy".format(noise))
+    for rot in [2, 4, 6, 8, 10, 20, 60, 180]:
+        for k in tqdm(range(1, 11)):
+            features = np.load("./rot_test/{}/".format(k)+"b_features_{}.npy".format(rot))
+            reconstruction = np.load("./rot_test/{}/".format(k)+"b_features_{}.npy".format(rot))
 
             error = np.abs(features - reconstruction)
             error = np.sum(error, axis=-1)
@@ -64,7 +64,7 @@ def gen_msk():
             closing_2 = morph.binary_closing(error_final, morph.square(15))
             dilatation = morph.binary_dilation(closing_2)
 
-            plt.imsave("./lnoise/{}/".format(k) + "{}_gt.png".format(noise), dilatation, format='png', cmap='gray')
+            plt.imsave("./rot_test/{}/".format(k) + "{}_gt.png".format(rot), dilatation, format='png', cmap='gray')
     return None
 
 
