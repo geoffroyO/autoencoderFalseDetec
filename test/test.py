@@ -57,7 +57,7 @@ def test_endVae4K(pathModel):
             img = img[..., ::-1]
             img = img.astype('float32') / 255.
 
-            error, features, reconstruction = predendVae4K(model, img, 32, 30)
+            error, features, reconstruction = predendVae4K(model, img, 32, 3)
 
             np.save("./rot_test/{}/".format(file) + "b_err_{}.npy".format(rot), error)
             np.save("./rot_test/{}/".format(file) + "b_features_{}.npy".format(rot), features)
