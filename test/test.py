@@ -59,9 +59,9 @@ def test_endVae4K(pathModel):
 
             error, features, reconstruction = predendVae4K(model, img, 32, 3)
 
-            np.save("./rot_test/{}/".format(file) + "b_err_{}.npy".format(scale), error)
-            np.save("./rot_test/{}/".format(file) + "b_features_{}.npy".format(scale), features)
-            np.save("./rot_test/{}/".format(file) + "b_reconstruction_{}.npy".format(scale), reconstruction)
+            np.save("./scale_test/{}/".format(file) + "b_err_{}.npy".format(scale), error)
+            np.save("./scale_test/{}/".format(file) + "b_features_{}.npy".format(scale), features)
+            np.save("./scale_test/{}/".format(file) + "b_reconstruction_{}.npy".format(scale), reconstruction)
 
 
 if __name__ == '__main__':
