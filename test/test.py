@@ -49,9 +49,9 @@ def test_endVae4K(pathModel):
     model.predict(np.array([img[0:32, 0:32]]))
 
     model.load_weights(pathModel)
-    for scale in [500, 800, 910, 930, 960, 970, 990, 1010, 1050, 1070, 1090, 1200, 2000]:
+    for rot in [2, 4, 6, 8, 10, 20, 60, 180]:
         for file in range(1, 11):
-            path = "./scale_test/{}/".format(file) + "{}.png".format(scale)
+            path = "./rot_test/{}/".format(file) + "{}.png".format(rot)
 
             img = cv2.imread(path, 1)
             img = img[..., ::-1]
@@ -59,9 +59,9 @@ def test_endVae4K(pathModel):
 
             error, features, reconstruction = predendVae4K(model, img, 32, 3)
 
-            np.save("./scale_test/{}/".format(file) + "b_err_{}.npy".format(scale), error)
-            np.save("./scale_test/{}/".format(file) + "b_features_{}.npy".format(scale), features)
-            np.save("./scale_test/{}/".format(file) + "b_reconstruction_{}.npy".format(scale), reconstruction)
+            np.save("./rot_test/{}/".format(file) + "b_err_{}.npy".format(rot), error)
+            np.save("./rot_test/{}/".format(file) + "b_features_{}.npy".format(rot), features)
+            np.save("./rot_test/{}/".format(file) + "b_reconstruction_{}.npy".format(rot), reconstruction)
 
 
 if __name__ == '__main__':
