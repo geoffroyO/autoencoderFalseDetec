@@ -11,7 +11,7 @@ def gen_msk():
     for rot in [2, 4, 6, 8, 10, 20, 60, 180]:
         for k in tqdm(range(1, 11)):
             features = np.load("./rot_test/{}/".format(k)+"b_features_{}.npy".format(rot))
-            reconstruction = np.load("./rot_test/{}/".format(k)+"b_features_{}.npy".format(rot))
+            reconstruction = np.load("./rot_test/{}/".format(k)+"b_reconstruction{}.npy".format(rot))
 
             error = np.abs(features - reconstruction)
             error = np.sum(error, axis=-1)
