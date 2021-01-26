@@ -8,10 +8,10 @@ from scipy.ndimage.measurements import label
 
 
 def gen_msk():
-    for rot in [2, 4, 6, 8, 10, 20, 60, 180]:
-        for k in tqdm(range(1, 11)):
-            features = np.load("./rot_test/{}/".format(k)+"b_features_{}.npy".format(rot))
-            reconstruction = np.load("./rot_test/{}/".format(k)+"b_reconstruction_{}.npy".format(rot))
+    for noise in [0, 20, 40, 60, 80, 100]:
+        for k in tqdm(range(1, 49)):
+            features = np.load("./lnoise/{}/".format(k)+"b_features_{}.npy".format(noise))
+            reconstruction = np.load("./lnoise/{}/".format(k)+"b_reconstruction_{}.npy".format(noise))
 
             error = np.abs(features - reconstruction)
             error = np.sum(error, axis=-1)
@@ -23,7 +23,7 @@ def gen_msk():
                 for j in range(m):
                     error_list.append([error[i, j]])
 
-            kmeans = KMeans(n_clusters=5, random_state=0).fit(error_list)
+            kmeans = KMeans(n_clusters=2, random_state=0).fit(error_list)
 
             counts = [0, 0, 0, 0, 0]
             for e in kmeans.labels_:
@@ -40,10 +40,15 @@ def gen_msk():
                     count += 1
 
             """ Morphologie """
-            closing = morph.binary_closing(error_2, morph.square(4))
-            opening = morph.binary_opening(closing, morph.square(4))
+            closing = morph.binary_closing(error_2, morph.square(40))
+            opening = morph.binary_opening(closing, morph.square(80))
+            dilatation = morph.binary_dilation(opening)
 
-            """ CC """
+            plt.imsave("./lnoise/{}/".format(k) + "{}_prednoCC_gt.png".format(noise), dilatation, format='png',
+                       cmap='gray')
+        return None
+"""
+
             labeled_array, num_features = label(opening)
 
             count = [0 for _ in range(num_features)]
@@ -59,13 +64,8 @@ def gen_msk():
                     for j in range(m):
                         if labeled_array[i, j] == np.argmax(count) + 1:
                             error_final[i, j] = 1
+"""
 
-            """ Morphologie """
-            closing_2 = morph.binary_closing(error_final, morph.square(15))
-            dilatation = morph.binary_dilation(closing_2)
-
-            plt.imsave("./rot_test/{}/".format(k) + "{}_pred_gt.png".format(rot), dilatation, format='png', cmap='gray')
-    return None
 
 
 if __name__ == '__main__':
