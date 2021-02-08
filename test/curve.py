@@ -30,14 +30,14 @@ def dice(pred_mask, mask):
                 inter += 1
     return 2*inter/(count_pred+count_ori)
 
-if __name__ == '__main__:
+
+if __name__ == '__main__':
     d = [0 for _ in range(5)]
     for count, noise in tqdm(enumerate([20, 40, 60, 80, 100])):
         for k in tqdm(range(1, 49)):
-            pred_msk, msk = io.imread("./lnoise/{}/".format(k) + "{}_gt.png".format(noise), as_gray=True), io.imread("./lnoise/{}/gt.png".format(k), as_gray=True)
+            pred_msk, msk = io.imread("./lnoise/{}/".format(k) + "{}_pred_final_gt.png".format(noise), as_gray=True), io.imread("./lnoise/{}/gt.png".format(k), as_gray=True)
             
-            dcount[count] += dice(pred_msk, msk)
-        dcount[count] /= 49
+            d[count] += dice(pred_msk, msk)
+        d[count] /= 49
 
-
-    np.save("./dice.npy", np.array(d))
+    np.save("./dice_final.npy", np.array(d))
