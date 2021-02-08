@@ -40,11 +40,11 @@ if __name__ == '__main__':
             tp, fp, fn = 0, 0, 0
             for i in range(n):
                 for j in range(m):
-                    if pred_msk and msk:
+                    if pred_msk[i, j] and msk[i, j]:
                         tp += 1
-                    elif pred_msk and not msk:
+                    elif pred_msk[i, j] and not msk[i, j]:
                         fp += 1
-                    elif not pred_msk and msk:
+                    elif not pred_msk[i, j] and msk[i, j]:
                         fn += 1
             if tp != 0:
                 recall[count] += tp/(tp+fp)
