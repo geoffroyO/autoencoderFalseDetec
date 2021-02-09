@@ -97,4 +97,11 @@ def extract_no_border(type):
 
 
 if __name__ == '__main__':
-    extract_no_border('all_to_train')
+
+    # Charger les images et les mettre dans une liste
+    img, msk = ..., ...
+
+    patch_img, patch_msk = patch_images(img, msk)
+
+    np.load("[endroit où enregistrer]", patch_img)
+    np.load("[endroit où enregistrer]", patch_msk)

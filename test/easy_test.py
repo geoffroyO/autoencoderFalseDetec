@@ -45,12 +45,14 @@ def predendVae(model, img, block_size):
 
 
 def test_endVae():
-    pathModel = "../models/vae_250.hdf5"
+    pathModel = "../models/srmBlurred_4K_250.hdf5" # chemin du modèle
+    path = "..." # y mettre l'emplacement de l'image
+    name = "..." # y mettre le nom de l'image
 
-    encoder = v.encoder()
-    decoder = v.decoder()
-    model = v.vae(encoder, decoder)
-    path = "./easy_test/{}.jpg".format(1)
+    encoder = b.encoder()
+    decoder = b.decoder()
+    model = b.srmAno(encoder, decoder)
+
     img = cv2.imread(path, 1)
     img = img[..., ::-1]
     img = img.astype('float32') / 255.
@@ -59,18 +61,10 @@ def test_endVae():
     model.load_weights(pathModel)
     model.predict(np.array([img[0:32, 0:32]]))
 
-
-    for k in range(1, 4):
-        path = "./easy_test/{}.jpg".format(k)
-
-        img = cv2.imread(path, 1)
-        img = img[..., ::-1]
-        img = img.astype('float32') / 255.
-
-        reconstruction, features, error = predendVae(model, img, 32)
-        np.save("./easy_test/{}_reconstruction_v.npy".format(k), reconstruction)
-        np.save("./easy_test/{}_features_v.npy".format(k), features)
-        np.save("./easy_test/{}_error_v.npy".format(k), error)
+    reconstruction, features, error = predendVae(model, img, 32)
+    np.save("./{}_reconstruction.npy".format(name), reconstruction)
+    np.save("./{}_features.npy".format(name), features)
+    np.save("./{}_error.npy".format(name), error)
 
 
 if __name__ == '__main__':
